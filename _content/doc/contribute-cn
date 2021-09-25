@@ -1,0 +1,211 @@
+<DOCTYPE! html>
+
+<html lang=”zh-cn">
+
+<h2 id="contributor">成为一名贡献者<a class="permalink" href="#contributor">¶</a></h2>
+
+<h3 id="contrib_overview">概览<a class="permalink" href="#contrib_overview">¶</a></h3>
+
+<p>
+首先是注册成为 Go 的贡献者并配置您的环境。
+以下是注册步骤：
+</p>
+
+<ul>
+<li>
+<b>第 0 步</b>：选择您将用于为 Go 做出贡献的单个 Google 帐户。
+使用该帐户执行以下所有步骤，并确保 <code>git</code>
+创建和提交的电子邮件为该帐户。
+</li>
+<li>
+<b>第 1 步</b>：<a href="https://cla.developers.google.com/clas">签署并提交</a>
+CLA（贡献者许可协议）。
+</li>
+<li>
+<b>第 2 步</b>：为 Go Git 存储库配置身份验证凭据。
+访问 <a href="https://go.googlesource.com">go.googlesource.com</a>，点击
+页面右上角菜单栏中的“生成密码”，然后按照指示。
+</li>
+<li>
+<b>第 3 步</b>：通过<a href="https://go-review.googlesource.com/login/">访问此页面</a>注册 Go 团队使用的代码审查工具 Gerrit。
+您的帐户只需要完成CLA 和注册一次。
+</li>
+<li>
+<b>第 4 步</b>：运行 
+<code>go install golang.org/x/review/git-codereview@latest</code> 来安装 <code>git-codereview</code>
+</li>
+</ul>
+
+<p>
+如果您愿意，可以使用自动化工具来完成这些步骤。
+只需要运行：
+</p>
+
+<pre>$ go install golang.org/x/tools/cmd/go-contrib-init@latest
+$ cd /code/to/edit
+$ go-contrib-init
+</pre>
+
+<p>
+本章的其余部分详细说明了这些步骤。
+如果您已完成上述步骤（手动或通过工具），请跳转至
+<a href="#before_contributing">贡献代码之前</a>。
+</p>
+
+<h3 id="google_account">第 0 步：选择 Google 帐户 <a class="permalink" href="#google_account">¶</a></h3>
+
+<p>
+对 Go 的贡献是通过有特定的电子邮件地址的 Google 帐户做出的。
+请确保在整个过程中与为您的所有后续贡献使用相同的帐户。
+您可能需要决定是使用个人邮箱地址还是公司邮箱地址。
+这将取决于谁将拥有您将要编写和提交的代码的版权。
+您可能想与您的雇主讨论这个话题，然后再决定要使用的帐户。
+</p>
+
+<p>
+Google 帐户可以是 Gmail 电子邮件帐户、G Suite 机构帐户或与外部电子邮件地址关联的帐户。
+例如，如果您需要使用不通过 G Suite 管理的现有公司电子邮件，您可以创建新账户
+并关联<a href="https://accounts.google.com/SignUpWithoutGmail">您现有的电子邮件地址</a>。
+</p>
+
+<p>
+您还需要确保您的 Git 工具配置为使用您选择的电子邮件地址创建与提交。
+您可以全局配置 Git
+（作为所有项目的默认值）或本地（对于单个特定项目）。
+您可以使用以下命令检查当前配置：
+</p>
+
+<pre>$ git config --global user.email # 查看当前全局配置
+$ git config user.email # 查看当前本地配置
+</pre>
+
+<p>
+要更改配置的地址：
+</p>
+
+<pre>$ git config --global user.email name@example.com # 更改全局配置
+$ git config user.email name@example.com # 更改本地配置
+</pre>
+
+
+<h3 id="cla">第 1 步：贡献者许可协议 <a class="permalink" href="#cla">¶</a></h3>
+
+<p>
+在将您的第一个更改发送到 Go 项目之前
+您必须已完成以下两个 CLA 之一。
+您应该签署哪个 CLA 取决于谁拥有您作品的版权。
+</p>
+
+<ul>
+<li>
+如果您是版权所有者，则需要同意
+<a href="https://developers.google.com/open-source/cla/individual">个人
+贡献者许可协议</a>，可以在线完成。
+</li>
+<li>
+如果您的组织是版权所有者，则该组织
+将需要同意
+<a href="https://developers.google.com/open-source/cla/corporate">企业
+贡献者许可协议</a>。<br>
+</li>
+</ul>
+
+<p>
+您可以查看您当前签署的协议并签署新的协议：
+<a href="https://cla.developers.google.com/clas?pli=1&amp;authuser=1">Google 开发者
+贡献者许可协议</a>网站。
+如果您贡献的版权所有者已经被关联
+与另一个 Google 开源项目相关的协议，
+那么不需要再次完成这个步骤。
+</p>
+
+<p>
+如果您提交的代码的版权所有者发生了更改——例如，
+如果你开始代表一家新公司贡献代码——请发送邮件
+到 <a href="mailto:golang-dev@googlegroups.com"><code>golang-dev</code>
+邮件列表</a>。
+这将使我们了解情况，以便我们确保达成适当的协议
+完成并更新 <code>AUTHORS</code> 文件。
+</p>
+
+
+<h3 id="config_git_auth">第 2 步：配置 git 身份验证 <a class="permalink" href="#config_git_auth">¶</a></h3>
+
+<p>
+主要的 Go 存储库位于
+<a href="https://go.googlesource.com">go.googlesource.com</a>，
+这是一个由 Google 托管的 Git 服务器。
+Web 服务器上的身份验证是通过您的 Google 帐户进行的，但是
+您还需要在您的计算机上配置 <code>git</code> 才能访问它。
+请按着这些次序：
+</p>
+
+<ol>
+<li>
+访问 <a href="https://go.googlesource.com">go.googlesource.com</a>
+然后点击页面右上角菜单栏中的“生成密码”。
+您将被重定向到 accounts.google.com 进行登录。
+</li>
+<li>
+登录后，您将被带到标题为“配置 Git”的页面。
+此页面包含一个个性化的脚本，在本地运行时将配置 Git
+保存您唯一的身份验证密钥。
+此密钥与生成并存储在服务器上的密钥配对，
+类似于 SSH 密钥的工作方式。
+</li>
+<li>
+在您的终端本地复制并运行此脚本以存储您的秘密
+<code>.gitcookies</code> 文件中的身份验证令牌。
+如果您使用的是 Windows 计算机并运行 <code>cmd</code>，
+您应该按照黄色框中的说明运行命令；
+否则请运行常规脚本。
+</li>
+</ol>
+
+<h3 id="auth">第 3 步：创建 Gerrit 帐户 <a class="permalink" href="#auth">¶</a></h3>
+
+<p>
+Gerrit 是 Go 维护者用来讨论和审查提交后代码的开源工具。
+</p>
+
+<p>
+如需要注册您的帐户，请访问 <a href="https://go-review.googlesource.com/login/">
+go-review.googlesource.com/login/</a> 并使用您在之前步骤使用的同一 Google 帐户登录一次。
+</p>
+
+<h3 id="git-codereview_install">第 4 步：安装 git-codereview 命令 <a class="permalink" href="#git-codereview_install">¶</a></h3>
+
+<p>
+对 Go 的更改在被接受之前必须进行审查，无论是谁做出的更改。
+一个叫做 <code>git-codereview</code> 的自定义 <code>git</code> 命令
+可以简化向 Gerrit 发送更改的过程。
+</p>
+
+<p>
+通过运行安装 <code>git-codereview</code> 命令，
+</p>
+
+<pre>$ go install golang.org/x/review/git-codereview@latest
+</pre>
+
+<p>
+确保 <code>git-codereview</code> 已安装在您的 shell 路径中，以便
+<code>git</code> 命令可以找到它。
+并检查
+</p>
+
+<pre>$ git codereview 帮助
+</pre>
+
+<p>
+显示的帮助文本，而不是错误。如果显示错误，请确保
+<code>$GOPATH/bin</code> 在您的 <code>$PATH</code> 中。
+</p>
+
+<p>
+在 Windows 上，当使用 git-bash 时，你必须确保
+<code>git-codereview.exe</code> 在你的 <code>git</code> exec-path 中。
+运行 <code>git --exec-path</code> 以发现正确的位置，然后创建一个
+符号链接或将仅可执行文件从 <code>$GOPATH/bin</code> 复制到此
+目录。
+</p>
